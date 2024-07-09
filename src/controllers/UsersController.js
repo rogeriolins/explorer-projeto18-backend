@@ -10,7 +10,7 @@ class UsersController {
  */
 
  create ( request, response ) {
-    const { name, email, password, isAdmin } = request.bodyy;
+    const { name, email, password, isAdmin } = request.body;
     if(!name) {
         throw new AppError("Nome não informado!");
     }
