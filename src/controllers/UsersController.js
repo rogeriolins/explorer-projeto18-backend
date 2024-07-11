@@ -34,21 +34,9 @@ class UsersController {
     
         user.name = name;
         user.mail = email;
-    
-        await database.run(`
-                update users set
-                    name = ?,
-                    email = ?,
-                    update_at = ?
-                where 
-                    id = ?
-            `, 
-            [ 
-                user.name, 
-                user.email,
-                new Date(),
-                user.id
-            ]
+
+        await database.run("update users set name = (?), email = (?), updated_at = (?) where id = (?)", 
+            [ user.name, user.email, new Date(), user.id ]
         );
     
         return response.status(200).json("User Updated.");
