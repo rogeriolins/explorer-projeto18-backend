@@ -1,5 +1,5 @@
 // Gerar um hash da senha atraves do pacote BCryptJS
-const { hash } = require("bcryptjs");
+const { hash, compare } = require("bcryptjs");
 const AppError = require("../utils/AppError");
 
 const sqliteConnection = require("../database/sqlite");
@@ -14,7 +14,7 @@ class UsersController {
  */
 
  async update( request, response ) {
-    const { name, email, password } = request.body;
+    const { name, email, password, password_old } = request.body;
     const { id } = request.params;
 
     const database = await sqliteConnection();
@@ -32,11 +32,26 @@ class UsersController {
             throw new AppError("This email is already in use by another user!")
         }
     
-        user.name = name;
-        user.mail = email;
+        user.name = name ?? user.name;
+        user.email = email ?? user.email;
 
-        await database.run("update users set name = (?), email = (?), updated_at = (?) where id = (?)", 
-            [ user.name, user.email, new Date(), user.id ]
+        // Validar se a senha antiga foi informada
+        if(password && !password_old) {
+            throw new AppError("You must enter your old password!")
+        }
+
+        if(password && password_old) {
+            const checkOldPassword = await compare(password_old, user.password);
+
+            if(!checkOldPassword) {
+                throw new AppError("The old password does not match!");
+            }
+
+            user.password = await hash(password, 8);
+        }
+
+        await database.run("update users set name = (?), email = (?), password = (?), updated_at = DATETIME('now') where id = (?)", 
+            [ user.name, user.email, user.password, user.id ]
         );
     
         return response.status(200).json("User Updated.");
