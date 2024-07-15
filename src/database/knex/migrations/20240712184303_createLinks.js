@@ -1,4 +1,5 @@
 // npx knex migrate:make nomeDaTabela
+// npm run migrate
 exports.up = knex => knex.schema.createTable("links", table => {
     table.increments("id");
     table.text("url").notNullable();
