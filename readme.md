@@ -18,14 +18,14 @@
 <br>
 
 <p align="center">
-  <img alt="Project Explorer" src=".github/my-cover-projeto18.jpg" width="100%">
+  <img alt="Project Explorer" src=".github/cover-project-18.jpg" width="100%">
 </p>
 
 ## 🚀 Technologies
 
 This project was developed with the following technologies:
 
-- HTML e CSS
+- NodeJS, Knex, SQLite
 - Git e Github
 - JavaScript
 
